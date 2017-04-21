@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Project Hunger</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="map_info">Hungry? Good.\n\nFind the best food joints here and give them a rating. *The better the ratings, the bigger the logo of the restaurant. * You can navigate to any restaurant and add them to your favorites.\n\nNow go settle your hunger!</string>
+</resources>

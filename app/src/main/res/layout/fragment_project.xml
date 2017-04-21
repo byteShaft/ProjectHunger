@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_project"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.byteshaft.projecthunger.MainActivity">
+
+    <ImageView
+        android:id="@+id/iv_project_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_above="@+id/ll_main_bottom_layout">
+        <Button
+            android:id="@+id/btn_main_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/background_button_main"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:text="Go to Map"
+            android:padding="10dp"/>
+        <Button
+            android:id="@+id/btn_main_favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/background_button_main"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:text="Go to Favorites"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_main_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#DF9E28"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textColor="#902328"
+            android:text="Want your business on the map? Click here to register!" />
+
+        <Button
+            android:id="@+id/btn_main_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:background="@drawable/background_button_main"
+            android:text="REGISTER NOW!"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="2dp"-->
+            <!--android:background="#902328">-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_about"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:text="About"-->
+                <!--android:textColor="#DF9E28"/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_disclaimer"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:text="Disclaimer"-->
+                <!--android:textColor="#DF9E28" />-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_contact"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:text="Contact"-->
+                <!--android:textColor="#DF9E28" />-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_options"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:text="Options"-->
+                <!--android:textColor="#DF9E28" />-->
+        <!--</LinearLayout>-->
+    </LinearLayout>
+</RelativeLayout>

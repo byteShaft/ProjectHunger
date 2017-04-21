@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <fragment
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map_main"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/ib_map_marker_custom_info_window_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_map_marker_info_window"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="9dp"
+        android:visibility="gone"
+        android:background="@mipmap/ic_map_marker_custom_window_favorite_add"/>
+
+    <RatingBar
+        style="@style/Widget.AppCompat.RatingBar"
+        android:id="@+id/rb_map_marker_info_window_rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_map_marker_info_window"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:stepSize="1"
+        android:numStars="5"
+        android:isIndicator="false"
+        android:theme="@style/RatingBar"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/ll_map_marker_info_window"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:visibility="gone"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="7dp"
+        android:padding="6dp"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/background_map_marker_custom_info_window"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_map_marker_custom_info_window_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorButton"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                android:text="Italian Pizza"/>
+            <TextView
+                android:id="@+id/tv_map_marker_custom_info_window_opening_closing_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="10dp"
+                android:text="7:30am - 11:00pm"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1.2"
+            android:gravity="center">
+                <ImageButton
+                    android:id="@+id/ib_map_marker_custom_info_window_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/selector_map_marker_custom_info_window_call"/>
+                <ImageButton
+                    android:id="@+id/ib_map_marker_custom_info_window_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/selector_map_marker_custom_info_window_menu" />
+                <ImageButton
+                    android:id="@+id/ib_map_marker_custom_info_window_route"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/selector_map_marker_custom_info_window_navigate" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_map_marker_info_window_rating"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:orientation="vertical"
+                android:gravity="center">
+                <RatingBar
+                    android:id="@+id/rb_map_marker_info_window_rating_bar_indicator"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.1"
+                    android:isIndicator="true"
+                    android:theme="@style/RatingBar"/>
+                <TextView
+                    android:id="@+id/tv_map_marker_custom_info_window_number_of_ratings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="(23)"/>
+            </LinearLayout>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_map_info_window"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_margin="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:padding="10dp"
+            android:paddingTop="64dp"
+            android:orientation="vertical"
+            android:background="@drawable/background_map_info">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:text="Welcome to Project Hunger!"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="14dp"
+                android:text="@string/map_info"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_map_fragment_info_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"/>
+    </RelativeLayout>
+</RelativeLayout>

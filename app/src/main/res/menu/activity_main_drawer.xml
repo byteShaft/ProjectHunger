@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_pepperoni"
+            android:icon="@mipmap/ic_nav_business_type_pizza"
+            android:title="Project Pepperoni" />
+        <item
+            android:id="@+id/nav_wings"
+            android:icon="@mipmap/ic_nav_business_type_wings"
+            android:title="Project Buffalo" />
+        <item
+            android:id="@+id/nav_burger"
+            android:icon="@mipmap/ic_nav_business_type_burger"
+            android:title="Project Grill" />
+        <item
+            android:id="@+id/nav_taco"
+            android:icon="@mipmap/ic_nav_business_type_taco"
+            android:title="Project Taco" />
+    </group>
+</menu>

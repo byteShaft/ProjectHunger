@@ -1,0 +1,521 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_fragment_register_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:descendantFocusability="beforeDescendants"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/sv_register_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="15dp"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_fragment_register_business_type_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Business Type"
+                android:textColor="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:textColor="#ffffff"
+                    android:textSize="13dp"
+                    android:text="Which of these foods do you sell?"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/cb_fragment_register_business_type_pizza"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="Pizza"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_fragment_register_business_type_wings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="Wings"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_fragment_register_business_type_burger"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="Burger"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_fragment_register_business_type_taco"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="Mexican"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Business Name"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/et_fragment_register_business_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:maxLength="24"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Business Phone Number"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/et_fragment_register_business_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:inputType="phone"
+                android:maxLength="24"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/tv_fragment_register_business_location_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Business Location"
+                android:textColor="#ffffff" />
+
+            <RelativeLayout
+                android:id="@+id/rl_fragment_register_business_location"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:animateLayoutChanges="true"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:id="@+id/map_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <fragment
+                        android:id="@+id/map_register_fragment"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_register_fragment_map_transparent_overlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/map_bg_box" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:animateLayoutChanges="true"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.3">
+
+                        <EditText
+                            android:id="@+id/et_map_search"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:background="@drawable/background_edit_text_search"
+                            android:hint="Search"
+                            android:inputType="textPostalAddress"
+                            android:imeOptions="actionDone"
+                            android:maxLength="24"
+                            android:padding="6dp"
+                            android:textColor="#000000"
+                            android:textColorHint="#50000000"
+                            android:textCursorDrawable="@null"
+                            android:textSize="16dp"
+                            android:visibility="invisible" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.7"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/btn_fragment_register_map_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/selector_register_fragment_map_search" />
+
+                        <ImageButton
+                            android:id="@+id/btn_fragment_register_map_current_location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/selector_register_fragment_map_current_location" />
+
+                        <ImageButton
+                            android:id="@+id/btn_fragment_register_map_done"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/selector_register_fragment_map_done" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_register_fragment_location_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageButton
+                        android:id="@+id/btn_register_fragment_map_location_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_margin="6dp"
+                        android:background="@drawable/drawable_button_feedback"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:animateLayoutChanges="true"
+                        android:background="@drawable/background_layout_map_info"
+                        android:clickable="false"
+                        android:orientation="vertical"
+                        android:padding="5dp"
+                        android:paddingBottom="7dp">
+
+                        <TextView
+                            android:id="@+id/tv_register_fragment_location_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:shadowColor="#000000"
+                            android:shadowRadius="5"
+                            android:textColor="#ffffff"
+                            android:textSize="12dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_register_fragment_business_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:clickable="true"
+                android:maxLength="32"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Hours Open"
+                android:textColor="#ffffff" />
+
+            <RelativeLayout
+                android:id="@+id/rl_fragment_register_business_timings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:padding="16dp"
+                android:background="@drawable/background_edit_text"
+                android:animateLayoutChanges="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:animateLayoutChanges="true">
+
+                    <TextView
+                        android:id="@+id/tv_fragment_register_business_timings_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="18dp"
+                        android:visibility="gone"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        android:animateLayoutChanges="true">
+
+                        <LinearLayout
+                            android:id="@+id/ll_fragment_register_business_timings_opening_time"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="0.95"
+                            android:animateLayoutChanges="true"
+                            android:gravity="center_horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="Opening Time"
+                                android:textColor="#ffffff" />
+                            <TextView
+                                android:id="@+id/tv_fragment_register_business_timings_opening_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/background_edit_text"
+                                android:maxLength="24"
+                                android:padding="10dp"
+                                android:textColor="#ffffff"
+                                android:textSize="16dp" />
+                        </LinearLayout>
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.1"/>
+                        <LinearLayout
+                            android:id="@+id/ll_fragment_register_business_timings_closing_time"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="0.95"
+                            android:animateLayoutChanges="true"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="Closing Time"
+                                android:textColor="#ffffff" />
+                            <TextView
+                                android:id="@+id/tv_fragment_register_business_timings_closing_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/background_edit_text"
+                                android:maxLength="24"
+                                android:padding="10dp"
+                                android:textColor="#ffffff"
+                                android:textSize="16dp" />
+                            </LinearLayout>
+
+                    </LinearLayout>
+
+                    <RadioGroup
+                        android:id="@+id/rg_fragment_register_business_timings_input_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="16dp">
+
+                        <RadioButton
+                            android:id="@+id/rb_fragment_register_business_timings_same_for_all_week_days"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ffffff"
+                            android:text="Same for all days of the week"/>
+
+                        <RadioButton
+                            android:id="@+id/rb_fragment_register_business_timings_set_individually"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ffffff"
+                            android:text="Set Individually"/>
+                    </RadioGroup>
+
+                    <CheckBox
+                        android:id="@+id/cb_fragment_register_business_timings_holiday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="#ffffff"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/tv_fragment_register_business_timings_footer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="#ffffff"
+                        android:visibility="gone"
+                        android:layout_gravity="left"/>
+
+                    <LinearLayout
+                        android:id="@+id/ll_fragment_register_timings_buttons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
+                        android:animateLayoutChanges="true">
+                        <Button
+                            android:id="@+id/btn_fragment_register_business_timings_back"
+                            android:layout_width="64dp"
+                            android:layout_height="wrap_content"
+                            android:text="Back"
+                            android:visibility="gone"
+                            android:textColor="#ffffff"/>
+                        <Button
+                            android:id="@+id/btn_fragment_register_business_timings_done"
+                            android:layout_width="64dp"
+                            android:layout_height="wrap_content"
+                            android:text="Done"
+                            android:textColor="#ffffff"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_fragment_register_business_timings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:inputType="none"
+                android:maxLength="32"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Owner's Name"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/et_fragment_register_owner_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:inputType="textPersonName"
+                android:maxLength="24"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Owner's E-Mail"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:id="@+id/et_fragment_register_owner_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_edit_text"
+                android:inputType="textEmailAddress"
+                android:maxLength="32"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <LinearLayout
+                android:id="@+id/ll_fragment_register_pdf_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Menu PDF"
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/tv_fragment_register_pdf_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_edit_text"
+                    android:padding="10dp"
+                    android:textColor="#ffffff"
+                    android:textSize="16dp" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/cb_fragment_register_pdf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="Attach a menu PDF"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/btn_fragment_register_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_button_main"
+                android:padding="10dp"
+                android:text="Send Request"
+                android:textColor="@drawable/button_text_color"
+                android:textSize="16dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

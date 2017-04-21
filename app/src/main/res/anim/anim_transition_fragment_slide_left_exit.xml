@@ -1,0 +1,13 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_mediumAnimTime" >
+
+    <translate
+        android:duration="500"
+        android:fromXDelta="0"
+        android:toXDelta="-50%p" />
+
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0"
+        android:duration="350" />
+</set>
