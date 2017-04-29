@@ -113,6 +113,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
     TextView tvMapMarkerCustomInfoWindowPlaceName;
     TextView tvMapMarkerCustomInfoWindowOpenedClosed;
     TextView tvMapMarkerCustomInfoWindowNumberOfRatings;
+    TextView tvMapMarkerCustomInfoWindowRateIt;
     LinearLayout llMapMarkerInfoWindow;
     LinearLayout llMapMarkerInfoWindowRating;
     HttpURLConnection connection;
@@ -388,9 +389,9 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         mDatabaseHelpers = new DatabaseHelpers(MainActivity.getInstance());
 
         rlMapFragmentInfoWindow = (RelativeLayout) baseViewMapFragment.findViewById(rl_map_info_window);
-        rlMapFragmentInfoWindow.setOnClickListener(this);
         llMapMarkerInfoWindow = (LinearLayout) baseViewMapFragment.findViewById(R.id.ll_map_marker_info_window);
         llMapMarkerInfoWindowRating = (LinearLayout) baseViewMapFragment.findViewById(R.id.ll_map_marker_info_window_rating);
+        llMapMarkerInfoWindowRating.setOnClickListener(this);
         animLayoutInfoWindowBottomUp = AnimationUtils.loadAnimation(MainActivity.getInstance(), R.anim.anim_bottom_up);
         animLayoutInfoWindowBottomUp.setFillAfter(true);
         animLayoutInfoWindowBottomDown = AnimationUtils.loadAnimation(MainActivity.getInstance(), R.anim.anim_bottom_down);
@@ -410,6 +411,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         tvMapMarkerCustomInfoWindowPlaceName = (TextView) baseViewMapFragment.findViewById(R.id.tv_map_marker_custom_info_window_title);
         tvMapMarkerCustomInfoWindowOpenedClosed = (TextView) baseViewMapFragment.findViewById(R.id.tv_map_marker_custom_info_window_opening_closing_time);
         tvMapMarkerCustomInfoWindowNumberOfRatings = (TextView) baseViewMapFragment.findViewById(R.id.tv_map_marker_custom_info_window_number_of_ratings);
+        tvMapMarkerCustomInfoWindowRateIt = (TextView) baseViewMapFragment.findViewById(R.id.tv_map_marker_custom_info_window_rate_it);
 
         animLayoutInfoWindowBottomUp.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -660,21 +662,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                             hashMapPlacesData.get(markerInFocusID).get(0), "Remove from favorites?", "Yes", "No", removeFromFavorites);
                 }
                 break;
-            case R.id.ll_map_marker_info_window_rating:
-                if (rbMapMarkerCustomInfoWindowRatingBar.getVisibility() == View.GONE) {
-                    isRatingChangedByUser = true;
-                    rbMapMarkerCustomInfoWindowRatingBar.setVisibility(View.VISIBLE);
-                } else {
-                    rbMapMarkerCustomInfoWindowRatingBar.setVisibility(View.GONE);
-                    isRatingChangedByUser = false;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            rbMapMarkerCustomInfoWindowRatingBar.setRating(0);
-                        }
-                    }, 250);
-                }
-                break;
             case R.id.ib_map_marker_custom_info_window_call:
                 Helpers.AlertDialogWithPositiveFunctionNegativeButton(MainActivity.getInstance(),
                         hashMapPlacesData.get(markerInFocusID).get(0), "Want to initiate a call?", "Yes", "No", initiateCall);
@@ -694,6 +681,21 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rl_map_info_window:
                 rlMapFragmentInfoWindow.startAnimation(animMapInfoWindowOut);
+                break;
+            case R.id.ll_map_marker_info_window_rating:
+                if (rbMapMarkerCustomInfoWindowRatingBar.getVisibility() == View.GONE) {
+                    isRatingChangedByUser = true;
+                    rbMapMarkerCustomInfoWindowRatingBar.setVisibility(View.VISIBLE);
+                } else {
+                    rbMapMarkerCustomInfoWindowRatingBar.setVisibility(View.GONE);
+                    isRatingChangedByUser = false;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            rbMapMarkerCustomInfoWindowRatingBar.setRating(0);
+                        }
+                    }, 250);
+                }
                 break;
         }
     }
@@ -780,6 +782,14 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
             ibMapMarkerCustomInfoMenu.setVisibility(View.VISIBLE);
         } else {
             ibMapMarkerCustomInfoMenu.setVisibility(View.GONE);
+        }
+
+        if (hashMapPlacesData.get(markerInFocusID).get(8) != null) {
+            tvMapMarkerCustomInfoWindowRateIt.setVisibility(View.VISIBLE);
+            llMapMarkerInfoWindowRating.setOnClickListener(this);
+        } else {
+            tvMapMarkerCustomInfoWindowRateIt.setVisibility(View.GONE);
+            llMapMarkerInfoWindowRating.setOnClickListener(null);
         }
     }
 
