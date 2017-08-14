@@ -1,11 +1,8 @@
 package com.byteshaft.projecthunger.fragments;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +25,6 @@ import java.util.HashMap;
 
 import static com.byteshaft.projecthunger.utils.Helpers.loadFragment;
 import static com.byteshaft.projecthunger.utils.Helpers.onRecheckLocationAvailableTaskType;
-import static com.byteshaft.projecthunger.utils.Helpers.openLocationServiceSettings;
 
 
 /**
@@ -43,17 +39,6 @@ public class FavoritesFragment extends android.support.v4.app.Fragment {
     FavoritesListAdapter favoritesListAdapter;
     String contactNumberToInitiateCall;
     String idToDeleteEntry;
-    public static final Runnable recheckLocationServiceStatus = new Runnable() {
-        public void run() {
-            if (!Helpers.isAnyLocationServiceAvailable()) {
-                Helpers.AlertDialogWithPositiveNegativeNeutralFunctions(MainActivity.getInstance(),
-                        "Location Service disabled", "Enable device GPS to continue", "Settings", "ReCheck", "Dismiss",
-                        openLocationServiceSettings, recheckLocationServiceStatus);
-            } else {
-                loadFragment(MainActivity.fragmentManager, new NavigateFragment(), "NavigateFragment");
-            }
-        }
-    };
 
     Runnable initiateCall = new Runnable() {
         public void run() {
@@ -70,19 +55,7 @@ public class FavoritesFragment extends android.support.v4.app.Fragment {
     Runnable navigate = new Runnable() {
         public void run() {
             onRecheckLocationAvailableTaskType = 0;
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                    PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            } else if (!Helpers.checkPlayServicesAvailability(getActivity())) {
-                Helpers.AlertDialogWithPositiveFunctionNegativeButton(getActivity(), "Location components missing",
-                        "You need to install GooglePlayServices to continue", "Install",
-                        "Dismiss", Helpers.openPlayServicesInstallation);
-            } else if (!Helpers.isAnyLocationServiceAvailable()) {
-                Helpers.AlertDialogWithPositiveNegativeNeutralFunctions(getActivity(), "Location Service disabled",
-                        "Enable device GPS to continue", "Settings", "ReCheck", "Dismiss",
-                        openLocationServiceSettings, recheckLocationServiceStatus);
-            } else {
+            if (Helpers.isDeviceReadyForLocationAcquisition(getActivity())) {
                 loadFragment(MainActivity.fragmentManager, new NavigateFragment(), "NavigateFragment");
             }
         }
@@ -285,5 +258,7 @@ public class FavoritesFragment extends android.support.v4.app.Fragment {
         ImageView ivFavoritesBurger;
         ImageView ivFavoritesTaco;
     }
+
+
 
 }

@@ -1,23 +1,25 @@
 package com.byteshaft.projecthunger.fragments;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.byteshaft.projecthunger.MainActivity;
 import com.byteshaft.projecthunger.R;
 import com.byteshaft.projecthunger.utils.DatabaseHelpers;
 import com.byteshaft.projecthunger.utils.Helpers;
+
+import java.text.ParseException;
 
 import static com.byteshaft.projecthunger.MainActivity.selectedProjectType;
 import static com.byteshaft.projecthunger.utils.Helpers.loadFragment;
@@ -32,6 +34,8 @@ public class ProjectFragment extends android.support.v4.app.Fragment implements 
     View baseViewWelcomeFragment;
     DatabaseHelpers mDatabaseHelpers;
     ImageView ivProjectTitle;
+    TextView tvProjectLateTiming;
+    LinearLayout llProjectMainBottom;
 
 
 
@@ -39,6 +43,10 @@ public class ProjectFragment extends android.support.v4.app.Fragment implements 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         baseViewWelcomeFragment = inflater.inflate(R.layout.fragment_project, container, false);
+
+        tvProjectLateTiming = (TextView) baseViewWelcomeFragment.findViewById(R.id.tv_project_late_timings);
+
+        llProjectMainBottom = (LinearLayout) baseViewWelcomeFragment.findViewById(R.id.ll_main_bottom_layout);
 
         rlFragmentProject = (RelativeLayout) baseViewWelcomeFragment.findViewById(R.id.fragment_project);
         rlFragmentProject.setBackgroundResource(getAppropriateBackground());
@@ -56,7 +64,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment implements 
         btnFavorites.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
 
-        MainActivity.getInstance().setTitle(Helpers.getAppropriateProjectName(MainActivity.selectedProjectType));
+        setupUI(MainActivity.selectedProjectType);
         return baseViewWelcomeFragment;
     }
 
@@ -69,19 +77,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment implements 
         switch (view.getId()) {
             case R.id.btn_main_map:
                 Helpers.onRecheckLocationAvailableTaskType = 0;
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                } else if (!Helpers.checkPlayServicesAvailability(getActivity())) {
-                    Helpers.AlertDialogWithPositiveFunctionNegativeButton(getActivity(), "Location components missing",
-                            "You need to install GooglePlayServices to continue", "Install",
-                            "Dismiss", Helpers.openPlayServicesInstallation);
-                } else if (!Helpers.isAnyLocationServiceAvailable()) {
-                    Helpers.AlertDialogWithPositiveNegativeNeutralFunctions(getActivity(), "Location Service disabled",
-                            "Enable device GPS to continue", "Settings", "ReCheck", "Dismiss",
-                            Helpers.openLocationServiceSettings, Helpers.recheckLocationServiceStatus);
-                } else {
+                if (Helpers.isDeviceReadyForLocationAcquisition(getActivity())) {
                     loadFragment(MainActivity.fragmentManager, new MapsFragment(), "MapsFragment");
                 }
                 break;
@@ -121,6 +117,8 @@ public class ProjectFragment extends android.support.v4.app.Fragment implements 
             backgroundResourceId = R.mipmap.iv_background_burger;
         } else if (selectedProjectType == 3) {
             backgroundResourceId = R.mipmap.iv_background_taco;
+        } else if (selectedProjectType == 4) {
+            backgroundResourceId = R.mipmap.iv_background_late;
         }
         return backgroundResourceId;
     }
@@ -135,6 +133,8 @@ public class ProjectFragment extends android.support.v4.app.Fragment implements 
             titleResourceId = R.mipmap.iv_title_burger;
         } else if (selectedProjectType == 3) {
             titleResourceId = R.mipmap.iv_title_taco;
+        } else if (selectedProjectType == 4) {
+            titleResourceId = R.mipmap.iv_title_late;
         }
         return titleResourceId;
     }
@@ -143,5 +143,28 @@ public class ProjectFragment extends android.support.v4.app.Fragment implements 
     public void onResume() {
         super.onResume();
         MainActivity.getInstance().setTitle("");
+        if (MainActivity.selectedProjectType == 4) {
+            try {
+                if (!Helpers.isCurrentTimeBetween("21:00:00", "05:00:00")) {
+                    MainActivity.header.callOnClick();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void setupUI(int projectType) {
+        MainActivity.getInstance().setTitle(Helpers.getAppropriateProjectName(MainActivity.selectedProjectType));
+        if (projectType == 4) {
+            llProjectMainBottom.setVisibility(View.INVISIBLE);
+            btnFavorites.setVisibility(View.GONE);
+            tvProjectLateTiming.setVisibility(View.VISIBLE);
+        } else {
+            llProjectMainBottom.setVisibility(View.VISIBLE);
+            btnFavorites.setVisibility(View.VISIBLE);
+            tvProjectLateTiming.setVisibility(View.GONE);
+        }
     }
 }

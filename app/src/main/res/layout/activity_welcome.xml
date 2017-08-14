@@ -5,11 +5,22 @@
     android:background="@mipmap/iv_background_welcome">
 
     <ImageView
+        android:id="@+id/iv_main_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:src="@mipmap/iv_main_welcome"
         android:layout_centerHorizontal="true"/>
+
+    <ImageButton
+        android:id="@+id/ib_welcome_late_night"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_below="@+id/iv_main_welcome"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:background="@drawable/selector_welcome_buttons_late_night"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,7 +29,7 @@
         android:layout_marginRight="42dp"
         android:layout_marginLeft="42dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="64dp">
+        android:layout_marginBottom="32dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,7 +51,7 @@
                 android:id="@+id/ib_welcome_taco"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="32dp"
                 android:background="@drawable/selector_welcome_buttons_taco"/>
             <ImageView
                 android:layout_width="wrap_content"
@@ -72,7 +83,7 @@
                 android:id="@+id/ib_welcome_wings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="32dp"
                 android:background="@drawable/selector_welcome_buttons_wings"/>
             <ImageView
                 android:layout_width="wrap_content"
@@ -80,6 +91,5 @@
                 android:layout_marginTop="16dp"
                 android:src="@mipmap/text_main_wings"/>
         </LinearLayout>
-
     </RelativeLayout>
 </RelativeLayout>

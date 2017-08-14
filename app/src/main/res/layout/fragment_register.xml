@@ -42,7 +42,7 @@
                     android:layout_margin="3dp"
                     android:textColor="#ffffff"
                     android:textSize="13dp"
-                    android:text="Which of these foods do you sell?"/>
+                    android:text="Which of these foods are served?"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -109,6 +109,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_edit_text"
                 android:inputType="phone"
+                android:imeOptions="actionDone"
                 android:maxLength="24"
                 android:padding="10dp"
                 android:textColor="#ffffff"
@@ -439,7 +440,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Owner's Name"
+                android:text="Your Name"
                 android:textColor="#ffffff" />
 
             <EditText
@@ -457,7 +458,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Owner's E-Mail"
+                android:text="Your E-Mail (Optional)"
                 android:textColor="#ffffff" />
 
             <EditText
@@ -466,6 +467,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_edit_text"
                 android:inputType="textEmailAddress"
+                android:imeOptions="actionDone"
                 android:maxLength="32"
                 android:padding="10dp"
                 android:textColor="#ffffff"

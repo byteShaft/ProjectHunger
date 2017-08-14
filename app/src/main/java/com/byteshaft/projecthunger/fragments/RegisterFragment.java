@@ -1,6 +1,5 @@
 package com.byteshaft.projecthunger.fragments;
 
-import android.Manifest;
 import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,11 +11,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +37,7 @@ import android.widget.Toast;
 
 import com.byteshaft.projecthunger.MainActivity;
 import com.byteshaft.projecthunger.R;
+import com.byteshaft.projecthunger.utils.AppGlobals;
 import com.byteshaft.projecthunger.utils.Helpers;
 import com.byteshaft.requests.FormData;
 import com.byteshaft.requests.HttpRequest;
@@ -202,7 +200,6 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
         cbRegisterFragmentBusinessTypeTaco = (CheckBox) baseViewRegisterFragment.findViewById(R.id.cb_fragment_register_business_type_taco);
 
         checkSelectedProjectCheckBox(selectedProjectType);
-
 
         etRegisterFragmentBusinessName = (EditText) baseViewRegisterFragment.findViewById(R.id.et_fragment_register_business_name);
         etRegisterFragmentBusinessNumber = (EditText) baseViewRegisterFragment.findViewById(R.id.et_fragment_register_business_number);
@@ -445,6 +442,9 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                 businessLocation = tvRegisterFragmentBusinessLocation.getText().toString();
                 businessMenuPDF = tvRegisterFragmentMenuPDF.getText().toString();
                 if (validateRegisterInfo()) {
+                    if (businessOwnersEmail.trim().isEmpty()) {
+                        businessOwnersEmail = "Not Specified";
+                    }
                     sendRegistrationRequest();
                 }
                 break;
@@ -452,6 +452,8 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                 if (mapRegisterLocationAdded) {
                     btnRegisterFragmentLocationCancel.setVisibility(View.GONE);
                     tvRegisterFragmentLocationInfo.setText("");
+                    tvRegisterFragmentBusinessLocation.setText("");
+                    tvRegisterFragmentBusinessLocation.setTextColor(Color.WHITE);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -463,20 +465,7 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                 }
                 break;
             case R.id.tv_register_fragment_business_location:
-                Helpers.onRecheckLocationAvailableTaskType = 1;
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                } else if (!Helpers.checkPlayServicesAvailability(getActivity())) {
-                    Helpers.AlertDialogWithPositiveFunctionNegativeButton(getActivity(), "Location components missing",
-                            "You need to install GooglePlayServices to continue", "Install",
-                            "Dismiss", Helpers.openPlayServicesInstallation);
-                } else if (!Helpers.isAnyLocationServiceAvailable()) {
-                    Helpers.AlertDialogWithPositiveNegativeNeutralFunctions(getActivity(), "Location Service disabled",
-                            "Enable device GPS to continue", "Settings", "ReCheck", "Dismiss",
-                            Helpers.openLocationServiceSettings, Helpers.recheckLocationServiceStatus);
-                } else {
+                if (Helpers.isDeviceReadyForLocationAcquisition(getActivity())) {
                     if (rlRegisterFragmentLocation.getVisibility() == View.GONE && tvRegisterFragmentBusinessLocation.getText().toString().isEmpty()) {
                         rlRegisterFragmentLocation.setVisibility(View.VISIBLE);
                         tvRegisterFragmentBusinessLocation.setVisibility(View.GONE);
@@ -512,6 +501,8 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                                             double latitude = latLng.latitude;
                                             double longitude = latLng.longitude;
                                             mapLocationPoint = Helpers.formatLatLngToLimitCharacterLengthAndReturnInSingleString(String.valueOf(latitude), String.valueOf(longitude));
+                                            tvRegisterFragmentBusinessLocation.setText(mapLocationPoint);
+                                            tvRegisterFragmentBusinessLocation.setTextColor(Color.GREEN);
                                             mapLocationPointMarker = mMap.addMarker(new MarkerOptions().position(latLng)
                                                     .icon(BitmapDescriptorFactory.fromResource(getAppropriateRegisterMapMarkerIconImageID(MainActivity.selectedProjectType))).snippet("-1"));
                                             mapRegisterLocationAdded = true;
@@ -535,8 +526,6 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                                         }
                                     }
                                 });
-
-
                             }
                         });
                     }
@@ -548,9 +537,9 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            tvRegisterFragmentBusinessLocation.setText(mapLocationPoint);
                             tvRegisterFragmentBusinessLocation.setVisibility(View.VISIBLE);
                             rlRegisterFragmentLocation.setVisibility(View.GONE);
+                            tvRegisterFragmentBusinessLocation.setError(null);
                         }
                     }, 250);
                 } else {
@@ -558,7 +547,7 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                 }
                 break;
             case R.id.btn_fragment_register_map_current_location:
-                if (Helpers.isAnyLocationServiceAvailable()) {
+                if (Helpers.isDeviceReadyForLocationAcquisition(AppGlobals.getRunningActivityInstance())) {
                     if (mMap != null) {
                         if (currentLatLngAuto != null) {
                             CameraPosition cameraPosition =
@@ -624,13 +613,13 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                     tvRegisterFragmentBusinessTimings.setVisibility(View.VISIBLE);
                     tvRegisterFragmentBusinessTimings.setText("Schedule Set");
                     tvRegisterFragmentBusinessTimings.setTextColor(Color.GREEN);
+                    tvRegisterFragmentBusinessTimings.setError(null);
                     sArrayListRegisterFragmentBusinessTimingsWeekDays = new ArrayList<>();
                     for (int i = 0; i < sArrayRegisterFragmentBusinessTimingsWeekDays.length; i++) {
                         sArrayListRegisterFragmentBusinessTimingsWeekDays.add(i, tvRegisterFragmentBusinessTimingsOpeningTime.getText() + "-" +
                                 tvRegisterFragmentBusinessTimingsClosingTime.getText());
                     }
                     isTimingsSetByUser = true;
-                    Log.i("array", "" + sArrayListRegisterFragmentBusinessTimingsWeekDays);
                 } else if (rgRegisterFragmentBusinessTimingsInputType.getCheckedRadioButtonId() == R.id.rb_fragment_register_business_timings_set_individually &&
                         (tvRegisterFragmentBusinessTimingsOpeningTime.getText().length() > 1 && tvRegisterFragmentBusinessTimingsClosingTime.getText().length() > 1 ||
                                 cbRegisterFragmentBusinessTimingsHoliday.isChecked()) && intRegisterFragmentBusinessTimingsSelectedDayCount > 5) {
@@ -656,7 +645,6 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
                         }
                     }
                     isTimingsSetByUser = true;
-                    Log.i("array", "" + sArrayListRegisterFragmentBusinessTimingsWeekDays);
                 } else if (rgRegisterFragmentBusinessTimingsInputType.getCheckedRadioButtonId() == R.id.rb_fragment_register_business_timings_set_individually &&
                         tvRegisterFragmentBusinessTimingsOpeningTime.getText().length() > 1 && tvRegisterFragmentBusinessTimingsClosingTime.getText().length() > 1 ||
                         cbRegisterFragmentBusinessTimingsHoliday.isChecked()) {
@@ -702,8 +690,6 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
 
                     cbRegisterFragmentBusinessTimingsHoliday.setText("Set " + sArrayRegisterFragmentBusinessTimingsWeekDays[intRegisterFragmentBusinessTimingsSelectedDayCount] +
                             " as a holiday");
-                    Log.i("intCount", "" + intRegisterFragmentBusinessTimingsSelectedDayCount);
-                    Log.i("array", "" + sArrayListRegisterFragmentBusinessTimingsWeekDays);
                 } else {
                     Toast.makeText(getInstance(), "Timing not set", Toast.LENGTH_SHORT).show();
                 }
@@ -794,10 +780,7 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
             etRegisterFragmentOwnersName.setError(null);
         }
 
-        if (businessOwnersEmail.trim().isEmpty()) {
-            etRegisterFragmentOwnersEmail.setError("Empty");
-            valid = false;
-        } else if (!businessOwnersEmail.trim().isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(businessOwnersEmail).matches()) {
+        if (!businessOwnersEmail.trim().isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(businessOwnersEmail).matches()) {
             etRegisterFragmentOwnersEmail.setError("Invalid E-Mail");
             valid = false;
         } else {
@@ -818,6 +801,15 @@ public class RegisterFragment extends android.support.v4.app.Fragment implements
             tvRegisterFragmentBusinessLocation.setError(null);
         }
 
+        if (valid && !mapRegisterLocationAdded) {
+            valid = false;
+            Toast.makeText(getActivity(), "Business point not set", Toast.LENGTH_SHORT).show();
+        }
+
+        if (valid && !isTimingsSetByUser) {
+            valid = false;
+            Toast.makeText(getActivity(), "Business timings not set", Toast.LENGTH_SHORT).show();
+        }
         return valid;
     }
 

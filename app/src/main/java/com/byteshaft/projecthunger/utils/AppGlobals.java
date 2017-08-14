@@ -1,9 +1,13 @@
 package com.byteshaft.projecthunger.utils;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.byteshaft.projecthunger.MainActivity;
+import com.byteshaft.projecthunger.WelcomeActivity;
 
 public class AppGlobals extends Application {
 
@@ -37,5 +41,14 @@ public class AppGlobals extends Application {
         super.onCreate();
         sContext = getApplicationContext();
         sPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    public static Activity getRunningActivityInstance() {
+        if (MainActivity.isMainActivityRunning) {
+            return MainActivity.getInstance();
+        } else if (WelcomeActivity.isWelcomeActivityRunning) {
+            return WelcomeActivity.getInstance();
+        }
+        return null;
     }
 }
