@@ -22,13 +22,15 @@ import com.byteshaft.projecthunger.utils.Helpers;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static MainActivity sInstance;
+    private static MainActivity mainInstance;
     public static boolean isMainActivityRunning;
     public static FragmentManager fragmentManager;
     public static int selectedProjectType = 0;
+    public static RelativeLayout header;
+
 
     public static MainActivity getInstance() {
-        return sInstance;
+        return mainInstance;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-        sInstance = this;
+        mainInstance = this;
         fragmentManager = getSupportFragmentManager();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
-        RelativeLayout header = (RelativeLayout) headerView.findViewById(R.id.nav_header);
+        header = (RelativeLayout) headerView.findViewById(R.id.nav_header);
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,10 +68,16 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        navigationView.getMenu().getItem(selectedProjectType).setChecked(true);
         navigationView.setItemIconTintList(null);
-        onNavigationItemSelected(navigationView.getMenu().getItem(selectedProjectType));
-        setTitle(Helpers.getAppropriateProjectName(selectedProjectType));
+        if (selectedProjectType != 4) {
+            navigationView.getMenu().getItem(selectedProjectType).setChecked(true);
+            onNavigationItemSelected(navigationView.getMenu().getItem(selectedProjectType));
+            setTitle(Helpers.getAppropriateProjectName(selectedProjectType));
+        } else {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Helpers.loadFragment(fragmentManager, new ProjectFragment(), null);
+            setTitle("Late Night");
+        }
 
         if (AppGlobals.getUniqueDeviceId() == null) {
             AppGlobals.putUniqueDeviceID(Settings.Secure.getString(this.getContentResolver(),
@@ -95,8 +103,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        int id = item.getItemId();
         if (id == R.id.nav_pepperoni) {
             selectedProjectType = 0;
         } else if (id == R.id.nav_wings) {
@@ -109,8 +120,6 @@ public class MainActivity extends AppCompatActivity
 
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         Helpers.loadFragment(fragmentManager, new ProjectFragment(), null);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         setTitle(Helpers.getAppropriateProjectName(MainActivity.selectedProjectType));
         return true;
     }
@@ -122,9 +131,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         isMainActivityRunning = true;
     }
-
 }

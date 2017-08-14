@@ -1,6 +1,5 @@
 package com.byteshaft.projecthunger.fragments;
 
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +29,7 @@ import android.widget.Toast;
 
 import com.byteshaft.projecthunger.MainActivity;
 import com.byteshaft.projecthunger.R;
+import com.byteshaft.projecthunger.WelcomeActivity;
 import com.byteshaft.projecthunger.utils.AppGlobals;
 import com.byteshaft.projecthunger.utils.DatabaseHelpers;
 import com.byteshaft.projecthunger.utils.Helpers;
@@ -55,7 +54,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.EOFException;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,13 +70,6 @@ import static com.byteshaft.projecthunger.R.id.rl_map_info_window;
 
 public class MapsFragment extends Fragment implements View.OnClickListener {
 
-    View baseViewMapFragment;
-    boolean bounce;
-    Animation animMapInfoWindowIn;
-    Animation animMapInfoWindowOut;
-    Animation animMapInfoLogoCompleteFading;
-    ImageView ivMapFragmentInfoLogo;
-    RelativeLayout rlMapFragmentInfoWindow;
     public static ArrayList<String> placesIDsList;
     public static HashMap<String, ArrayList<String>> hashMapPlacesData;
     public static int responseCode;
@@ -86,19 +77,14 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
     public static boolean addToFavoritesPending;
     static ImageButton ibMapMarkerCustomInfoFavorite;
     private static GoogleMap mMap = null;
-    private String returnProperSearchTerm() {
-        String searchTerm = null;
-        if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Pepperoni")) {
-            searchTerm = "pizza";
-        } else if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Taco")) {
-            searchTerm = "mexican food";
-        } else if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Buffalo")) {
-            searchTerm = "wings";
-        } else if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Grill")) {
-            searchTerm = "burger";
-        }
-        return searchTerm;
-    }
+    View baseViewMapFragment;
+    ImageButton ibMapHelp;
+    boolean bounce;
+    Animation animMapInfoWindowIn;
+    Animation animMapInfoWindowOut;
+    Animation animMapInfoLogoCompleteFading;
+    ImageView ivMapFragmentInfoLogo;
+    RelativeLayout rlMapFragmentInfoWindow;
     String searchRadius = "50000";
     String searchPlacesApiKey = "AIzaSyDevj8C58BdLPwmEdIqCgxZZZbuQEV69GY";
     String searchLocation;
@@ -217,6 +203,20 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         return json.toString();
     }
 
+    private String returnProperSearchTerm() {
+        String searchTerm = null;
+        if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Pepperoni")) {
+            searchTerm = "pizza";
+        } else if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Taco")) {
+            searchTerm = "mexican food";
+        } else if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Buffalo")) {
+            searchTerm = "wings";
+        } else if (Helpers.getAppropriateProjectName(selectedProjectType).equals("Grill")) {
+            searchTerm = "burger";
+        }
+        return searchTerm;
+    }
+
     private void addToFavoritesStuff() {
         String rating;
         String timings;
@@ -263,7 +263,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
 
         try {
             formattedAddress = formattedAddress.replace(", United States", "");
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         mDatabaseHelpers.createNewEntry(markerInFocusID, businessTypeForAddingFavorites, hashMapPlacesData.get(markerInFocusID).get(0),
                 hashMapPlacesData.get(markerInFocusID).get(1), formattedAddress, timings,
@@ -290,33 +291,18 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(36.778259, -119.417931), 4.0f));
-                if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), android.Manifest.permission.ACCESS_FINE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.getInstance(),
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    Helpers.AlertDialogWithPositiveNegativeFunctions(MainActivity.getInstance(), "Permission Denied",
-                            "You need to grant permissions to use Location Services", "Settings",
-                            "Exit App", Helpers.openPermissionsSettingsForMarshmallow, Helpers.exitApp);
-                } else {
-                    Helpers.showProgressDialog(MainActivity.getInstance(), "Acquiring current location");
-                    mMap.setMyLocationEnabled(true);
-                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                    mMap.getUiSettings().setCompassEnabled(true);
-                    mMap.setOnMyLocationChangeListener(myLocationChangeListener);
-                    mMap.getUiSettings().setMapToolbarEnabled(false);
-                }
+                Helpers.showProgressDialog(MainActivity.getInstance(), "Acquiring current location");
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mMap.getUiSettings().setCompassEnabled(true);
+                mMap.setOnMyLocationChangeListener(myLocationChangeListener);
+                mMap.getUiSettings().setMapToolbarEnabled(false);
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(final Marker marker) {
                         isAutoCameraPanOnMarkerClick = true;
-                            bounce = false;
+                        bounce = false;
                         sameMarkerClickedAgain = markerInFocusID.equalsIgnoreCase(marker.getSnippet());
                         markerInFocusID = marker.getSnippet();
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 16.0f), new GoogleMap.CancelableCallback() {
@@ -401,6 +387,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         animMapInfoWindowOut = AnimationUtils.loadAnimation(MainActivity.getInstance(), R.anim.anim_transition_fragment_slide_right_exit);
         animMapInfoWindowOut.setFillAfter(true);
         animMapInfoLogoCompleteFading = AnimationUtils.loadAnimation(MainActivity.getInstance(), R.anim.anim_text_complete_fading);
+        animMapInfoLogoCompleteFading.setFillAfter(true);
         ivMapFragmentInfoLogo = (ImageView) baseViewMapFragment.findViewById(R.id.iv_map_fragment_info_logo);
         ibMapMarkerCustomInfoFavorite = (ImageButton) baseViewMapFragment.findViewById(R.id.ib_map_marker_custom_info_window_favorite);
         ibMapMarkerCustomInfoCall = (ImageButton) baseViewMapFragment.findViewById(R.id.ib_map_marker_custom_info_window_call);
@@ -412,10 +399,13 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         tvMapMarkerCustomInfoWindowOpenedClosed = (TextView) baseViewMapFragment.findViewById(R.id.tv_map_marker_custom_info_window_opening_closing_time);
         tvMapMarkerCustomInfoWindowNumberOfRatings = (TextView) baseViewMapFragment.findViewById(R.id.tv_map_marker_custom_info_window_number_of_ratings);
         tvMapMarkerCustomInfoWindowRateIt = (TextView) baseViewMapFragment.findViewById(R.id.tv_map_marker_custom_info_window_rate_it);
+        ibMapHelp = (ImageButton) baseViewMapFragment.findViewById(R.id.ib_map_help);
+
 
         animLayoutInfoWindowBottomUp.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -423,7 +413,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
 
         animLayoutInfoWindowBottomDown.setAnimationListener(new Animation.AnimationListener() {
@@ -442,11 +433,14 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
 
         animMapInfoWindowIn.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {}
+            public void onAnimationStart(Animation animation) {
+                ibMapHelp.setVisibility(View.GONE);
+            }
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 ivMapFragmentInfoLogo.startAnimation(animMapInfoLogoCompleteFading);
+                rlMapFragmentInfoWindow.setClickable(true);
             }
 
             @Override
@@ -457,12 +451,14 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onAnimationStart(Animation animation) {
                 ivMapFragmentInfoLogo.clearAnimation();
+                rlMapFragmentInfoWindow.setClickable(false);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                rlMapFragmentInfoWindow.setVisibility(View.GONE);
                 AppGlobals.setMapFirstRun(false);
+                ibMapHelp.setVisibility(View.VISIBLE);
+                rlMapFragmentInfoWindow.setVisibility(View.GONE);
             }
 
             @Override
@@ -474,6 +470,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         ibMapMarkerCustomInfoCall.setOnClickListener(this);
         ibMapMarkerCustomInfoMenu.setOnClickListener(this);
         ibMapMarkerCustomInfoRoute.setOnClickListener(this);
+        rlMapFragmentInfoWindow.setOnClickListener(this);
+        ibMapHelp.setOnClickListener(this);
 
         rbMapMarkerCustomInfoWindowRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             Timer ratingChangedTimer = new Timer();
@@ -542,6 +540,11 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
         };
         MainActivity.getInstance().setTitle(Helpers.getAppropriateProjectName(MainActivity.selectedProjectType));
         setHasOptionsMenu(true);
+
+        if (AppGlobals.isMapFirstRun()) {
+            ibMapHelp.setVisibility(View.GONE);
+        }
+
         return baseViewMapFragment;
     }
 
@@ -640,9 +643,12 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         isMapFragmentRunning = true;
-        if (!Helpers.isAnyLocationServiceAvailable()) {
-            Toast.makeText(MainActivity.getInstance(), "GPS is Disabled", Toast.LENGTH_SHORT).show();
-            MainActivity.getInstance().onBackPressed();
+        if (!Helpers.isDeviceReadyForLocationAcquisition(getActivity())) {
+            if (selectedProjectType != 4) {
+                MainActivity.getInstance().onBackPressed();
+            } else {
+                Helpers.loadActivity(getActivity(), WelcomeActivity.class);
+            }
         }
     }
 
@@ -696,6 +702,10 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                         }
                     }, 250);
                 }
+                break;
+            case R.id.ib_map_help:
+                rlMapFragmentInfoWindow.startAnimation(animMapInfoWindowIn);
+                rlMapFragmentInfoWindow.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -840,6 +850,73 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                 Float.toString(rbMapMarkerCustomInfoWindowRatingBar.getRating()), AppGlobals.getUniqueDeviceId()));
     }
 
+    private int getAppropriateMapMarkerIconImageID(int projectType, int rating) {
+        int id = -1;
+        if (projectType == 0) {
+            if (rating == 0) {
+                id = R.mipmap.ic_marker_map_pizza_low_rating;
+            } else if (rating == 1) {
+                id = R.mipmap.ic_marker_map_pizza_normal_rating;
+            } else if (rating == 2) {
+                id = R.mipmap.ic_marker_map_pizza_high_rating;
+            }
+        } else if (projectType == 1) {
+            if (rating == 0) {
+                id = R.mipmap.ic_marker_map_wings_low_rating;
+            } else if (rating == 1) {
+                id = R.mipmap.ic_marker_map_wings_normal_rating;
+            } else if (rating == 2) {
+                id = R.mipmap.ic_marker_map_wings_high_rating;
+            }
+        } else if (projectType == 2) {
+            if (rating == 0) {
+                id = R.mipmap.ic_marker_map_burger_low_rating;
+            } else if (rating == 1) {
+                id = R.mipmap.ic_marker_map_burger_normal_rating;
+            } else if (rating == 2) {
+                id = R.mipmap.ic_marker_map_burger_high_rating;
+            }
+        } else if (projectType == 3) {
+            if (rating == 0) {
+                id = R.mipmap.ic_marker_map_taco_low_rating;
+            } else if (rating == 1) {
+                id = R.mipmap.ic_marker_map_taco_normal_rating;
+            } else if (rating == 2) {
+                id = R.mipmap.ic_marker_map_taco_high_rating;
+            }
+        } else if (projectType == 4) {
+            if (rating == 0) {
+                id = R.mipmap.ic_marker_map_late_low_rating;
+            } else if (rating == 1) {
+                id = R.mipmap.ic_marker_map_late_normal_rating;
+            } else if (rating == 2) {
+                id = R.mipmap.ic_marker_map_late_high_rating;
+            }
+        }
+        return id;
+    }
+
+    private void setMarkerBounce(final Marker marker) {
+        final Handler handler = new Handler();
+        final long startTime = SystemClock.uptimeMillis();
+        final long duration = 650;
+        final Interpolator interpolator = new AccelerateDecelerateInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (bounce) {
+                    long elapsed = SystemClock.uptimeMillis() - startTime;
+                    float t = Math.max(interpolator.getInterpolation((float) elapsed / duration), 0);
+                    marker.setAnchor(0.5f, 1.0f + t);
+                    handler.postDelayed(this, 12);
+                } else {
+                    handler.removeCallbacks(this);
+                    marker.setAnchor(0.5f, 1.0f);
+                }
+            }
+        });
+    }
+
     private class GetPizzaPlaces extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -858,84 +935,179 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                 placesIDsList = new ArrayList<>();
 
                 connection = WebServiceHelpers.openConnectionForUrl("http://139.59.187.73/api/restaurants/filter?radius=50&base_location=" + searchLocation, "GET");
-                responseCode = connection.getResponseCode();
                 JSONArray jsonArrayDigitalOceans = new JSONArray(WebServiceHelpers.readResponse(connection));
 
-                connection = WebServiceHelpers.openConnectionForUrl("https://maps.googleapis.com/maps/api/place/textsearch/" +
-                        "json?query=" + returnProperSearchTerm() + "&location=" + searchLocation +
-                        "&radius=" + searchRadius + "&key=" + searchPlacesApiKey, "GET");
-                responseCode = connection.getResponseCode();
+                Log.e("selected", "" + selectedProjectType);
+                Log.e("array", "" + jsonArrayDigitalOceans);
 
-                JSONObject jsonObjectGooglePlacesApiMain = new JSONObject(WebServiceHelpers.readResponse(connection));
-                JSONArray jsonArrayMain = jsonObjectGooglePlacesApiMain.getJSONArray("results");
+                if (selectedProjectType != 4) {
+                    connection = WebServiceHelpers.openConnectionForUrl("https://maps.googleapis.com/maps/api/place/textsearch/" +
+                            "json?query=" + returnProperSearchTerm() + "&location=" + searchLocation +
+                            "&radius=" + searchRadius + "&key=" + searchPlacesApiKey, "GET");
+                    responseCode = connection.getResponseCode();
 
-                for (int i = 0; i < jsonArrayDigitalOceans.length(); i++) {
-                    JSONObject jsonObjectDigitalOceans = jsonArrayDigitalOceans.getJSONObject(i);
-                    String id = jsonObjectDigitalOceans.getString("id");
-                    String[] businessType = jsonObjectDigitalOceans.getString("business_type").split(",");
-                    if (!placesIDsList.contains(id) && Boolean.parseBoolean(businessType[selectedProjectType])) {
-                        boolean matchFound = false;
-                        int loopCount = 0;
-                        placesIDsList.add(id);
-                        ArrayList<String> arrayListDataStringDigitalOceans = new ArrayList<>();
-                        arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("name"));
-                        arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("location"));
-                        latLngArray.add(jsonObjectDigitalOceans.getString("location"));
-                        while (!matchFound && loopCount < jsonArrayMain.length()) {
-                            JSONObject jsonObject = jsonArrayMain.getJSONObject(loopCount);
-                            JSONObject jsonObjectGeometry = jsonObject.getJSONObject("geometry");
-                            JSONObject jsonObjectLocation = jsonObjectGeometry.getJSONObject("location");
-                            if (jsonObjectDigitalOceans.getString("location").equalsIgnoreCase(Helpers.formatLatLngToLimitCharacterLengthAndReturnInSingleString(
-                                    jsonObjectLocation.getString("lat"), jsonObjectLocation.getString("lng")))) {
-                                matchFound = true;
+                    JSONObject jsonObjectGooglePlacesApiMain = new JSONObject(WebServiceHelpers.readResponse(connection));
+                    JSONArray jsonArrayMain = jsonObjectGooglePlacesApiMain.getJSONArray("results");
+
+                    for (int i = 0; i < jsonArrayDigitalOceans.length(); i++) {
+                        JSONObject jsonObjectDigitalOceans = jsonArrayDigitalOceans.getJSONObject(i);
+                        String id = jsonObjectDigitalOceans.getString("id");
+                        String[] businessType = jsonObjectDigitalOceans.getString("business_type").split(",");
+                        if (!placesIDsList.contains(id) && Boolean.parseBoolean(businessType[selectedProjectType])) {
+                            boolean matchFound = false;
+                            int loopCount = 0;
+                            placesIDsList.add(id);
+                            ArrayList<String> arrayListDataStringDigitalOceans = new ArrayList<>();
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("name"));
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("location"));
+                            latLngArray.add(jsonObjectDigitalOceans.getString("location"));
+                            while (!matchFound && loopCount < jsonArrayMain.length()) {
+                                JSONObject jsonObject = jsonArrayMain.getJSONObject(loopCount);
+                                JSONObject jsonObjectGeometry = jsonObject.getJSONObject("geometry");
+                                JSONObject jsonObjectLocation = jsonObjectGeometry.getJSONObject("location");
+                                if (jsonObjectDigitalOceans.getString("location").equalsIgnoreCase(Helpers.formatLatLngToLimitCharacterLengthAndReturnInSingleString(
+                                        jsonObjectLocation.getString("lat"), jsonObjectLocation.getString("lng")))) {
+                                    matchFound = true;
+                                    if (!jsonObjectDigitalOceans.getString("rating").equalsIgnoreCase("")) {
+                                        float ratingDigitalOceans = Float.parseFloat(jsonObjectDigitalOceans.getString("rating"));
+                                        if (jsonObject.has("rating")) {
+                                            float ratingGooglePlacesAPI = Float.parseFloat(jsonObject.getString("rating"));
+                                            arrayListDataStringDigitalOceans.add(Float.toString((ratingDigitalOceans + ratingGooglePlacesAPI) / 2));
+                                        } else {
+                                            arrayListDataStringDigitalOceans.add(Float.toString(ratingDigitalOceans));
+                                        }
+                                    } else {
+                                        if (jsonObject.has("rating")) {
+                                            arrayListDataStringDigitalOceans.add(jsonObject.getString("rating"));
+                                        } else {
+                                            arrayListDataStringDigitalOceans.add(null);
+                                        }
+                                    }
+
+                                    if (jsonObjectDigitalOceans.getString("timings").equalsIgnoreCase("")) {
+                                        JSONObject jsonObjectOpeningHours;
+                                        if (jsonObject.has("opening_hours")) {
+                                            jsonObjectOpeningHours = jsonObject.getJSONObject("opening_hours");
+                                        } else {
+                                            jsonObjectOpeningHours = null;
+                                        }
+
+                                        if (jsonObjectOpeningHours != null && jsonObjectOpeningHours.has("open_now")) {
+                                            arrayListDataStringDigitalOceans.add(jsonObjectOpeningHours.getString("open_now"));
+                                        } else {
+                                            arrayListDataStringDigitalOceans.add(null);
+                                        }
+
+                                    } else {
+                                        if (!jsonObjectDigitalOceans.getString("timings").equalsIgnoreCase("")) {
+                                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("timings"));
+                                        } else {
+                                            arrayListDataStringDigitalOceans.add(null);
+                                        }
+                                    }
+
+                                    if (jsonObject.has("formatted_address")) {
+                                        arrayListDataStringDigitalOceans.add(jsonObject.getString("formatted_address"));
+                                    } else {
+                                        arrayListDataStringDigitalOceans.add(null);
+                                    }
+                                }
+                                loopCount++;
+                            }
+
+                            if (!matchFound) {
                                 if (!jsonObjectDigitalOceans.getString("rating").equalsIgnoreCase("")) {
-                                    float ratingDigitalOceans = Float.parseFloat(jsonObjectDigitalOceans.getString("rating"));
-                                    if (jsonObject.has("rating")) {
-                                        float ratingGooglePlacesAPI = Float.parseFloat(jsonObject.getString("rating"));
-                                        arrayListDataStringDigitalOceans.add(Float.toString((ratingDigitalOceans + ratingGooglePlacesAPI) / 2));
-                                    } else {
-                                        arrayListDataStringDigitalOceans.add(Float.toString(ratingDigitalOceans));
-                                    }
-                                } else {
-                                    if (jsonObject.has("rating")) {
-                                        arrayListDataStringDigitalOceans.add(jsonObject.getString("rating"));
-                                    } else {
-                                        arrayListDataStringDigitalOceans.add(null);
-                                    }
-                                }
-
-                                if (jsonObjectDigitalOceans.getString("timings").equalsIgnoreCase("")) {
-                                    JSONObject jsonObjectOpeningHours;
-                                    if (jsonObject.has("opening_hours")) {
-                                        jsonObjectOpeningHours = jsonObject.getJSONObject("opening_hours");
-                                    } else {
-                                        jsonObjectOpeningHours = null;
-                                    }
-
-                                    if (jsonObjectOpeningHours != null && jsonObjectOpeningHours.has("open_now")) {
-                                        arrayListDataStringDigitalOceans.add(jsonObjectOpeningHours.getString("open_now"));
-                                    } else {
-                                        arrayListDataStringDigitalOceans.add(null);
-                                    }
-
-                                } else {
-                                    if (!jsonObjectDigitalOceans.getString("timings").equalsIgnoreCase("")) {
-                                        arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("timings"));
-                                    } else {
-                                        arrayListDataStringDigitalOceans.add(null);
-                                    }
-                                }
-
-                                if (jsonObject.has("formatted_address")) {
-                                    arrayListDataStringDigitalOceans.add(jsonObject.getString("formatted_address"));
+                                    arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("rating"));
                                 } else {
                                     arrayListDataStringDigitalOceans.add(null);
                                 }
-                            }
-                            loopCount++;
-                        }
 
-                        if (!matchFound) {
+                                if (!jsonObjectDigitalOceans.getString("timings").equalsIgnoreCase("")) {
+                                    arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("timings"));
+                                } else {
+                                    arrayListDataStringDigitalOceans.add(null);
+                                }
+                                arrayListDataStringDigitalOceans.add(null);
+                            }
+
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("review_count"));
+
+                            if (!jsonObjectDigitalOceans.getString("contact").equalsIgnoreCase("null") &&
+                                    !jsonObjectDigitalOceans.getString("contact").equalsIgnoreCase("")) {
+                                arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("contact"));
+                            } else {
+                                arrayListDataStringDigitalOceans.add(null);
+                            }
+
+                            if (!jsonObjectDigitalOceans.getString("menu").equalsIgnoreCase("null")) {
+                                arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("menu"));
+                            } else {
+                                arrayListDataStringDigitalOceans.add(null);
+                            }
+
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("business_type"));
+                            hashMapPlacesData.put(id, arrayListDataStringDigitalOceans);
+                        }
+                    }
+
+                    for (int i = 0; i < jsonArrayMain.length(); i++) {
+                        JSONObject jsonObject = jsonArrayMain.getJSONObject(i);
+
+                        JSONObject jsonObjectGeometry = jsonObject.getJSONObject("geometry");
+                        JSONObject jsonObjectLocation = jsonObjectGeometry.getJSONObject("location");
+                        JSONObject jsonObjectOpeningHours;
+                        if (jsonObject.has("opening_hours")) {
+                            jsonObjectOpeningHours = jsonObject.getJSONObject("opening_hours");
+                        } else {
+                            jsonObjectOpeningHours = null;
+                        }
+                        String id = jsonObject.getString("id");
+
+                        if (!placesIDsList.contains(id) && !latLngArray.contains(Helpers.formatLatLngToLimitCharacterLengthAndReturnInSingleString(
+                                jsonObjectLocation.getString("lat"), jsonObjectLocation.getString("lng")))) {
+                            placesIDsList.add(id);
+                            ArrayList<String> arrayListString = new ArrayList<>();
+                            arrayListString.add(jsonObject.getString("name"));
+                            arrayListString.add(Helpers.formatLatLngToLimitCharacterLengthAndReturnInSingleString(
+                                    jsonObjectLocation.getString("lat"), jsonObjectLocation.getString("lng")));
+                            if (jsonObject.has("rating")) {
+                                arrayListString.add(jsonObject.getString("rating"));
+                            } else {
+                                arrayListString.add(null);
+                            }
+
+                            if (jsonObjectOpeningHours != null && jsonObjectOpeningHours.has("open_now")) {
+                                arrayListString.add(jsonObjectOpeningHours.getString("open_now"));
+                            } else {
+                                arrayListString.add(null);
+                            }
+
+                            if (jsonObject.has("formatted_address")) {
+                                arrayListString.add(jsonObject.getString("formatted_address"));
+                            } else {
+                                arrayListString.add(null);
+                            }
+
+                            arrayListString.add(null);
+                            arrayListString.add(null);
+                            arrayListString.add(null);
+                            arrayListString.add(null);
+                            hashMapPlacesData.put(id, arrayListString);
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < jsonArrayDigitalOceans.length(); i++) {
+                        JSONObject jsonObjectDigitalOceans = jsonArrayDigitalOceans.getJSONObject(i);
+                        String id = jsonObjectDigitalOceans.getString("id");
+                        String[] arrayOpeningAndClosingTimeForCurrentDay = Helpers.getBusinessTimingsForCurrentDay(jsonObjectDigitalOceans.getString("timings")).split("-");
+                        if (!placesIDsList.contains(id) && Helpers.isCurrentTimeBetween(
+                                Helpers.convertAmPmTo24HoursTime(arrayOpeningAndClosingTimeForCurrentDay[0]),
+                                Helpers.convertAmPmTo24HoursTime(arrayOpeningAndClosingTimeForCurrentDay[1]))) {
+                            placesIDsList.add(id);
+                            ArrayList<String> arrayListDataStringDigitalOceans = new ArrayList<>();
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("name"));
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("location"));
+
                             if (!jsonObjectDigitalOceans.getString("rating").equalsIgnoreCase("")) {
                                 arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("rating"));
                             } else {
@@ -947,76 +1119,32 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                             } else {
                                 arrayListDataStringDigitalOceans.add(null);
                             }
+
                             arrayListDataStringDigitalOceans.add(null);
+
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("review_count"));
+
+                            if (!jsonObjectDigitalOceans.getString("contact").equalsIgnoreCase("null") &&
+                                    !jsonObjectDigitalOceans.getString("contact").equalsIgnoreCase("")) {
+                                arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("contact"));
+                            } else {
+                                arrayListDataStringDigitalOceans.add(null);
+                            }
+
+                            if (!jsonObjectDigitalOceans.getString("menu").equalsIgnoreCase("null")) {
+                                arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("menu"));
+                            } else {
+                                arrayListDataStringDigitalOceans.add(null);
+                            }
+
+                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("business_type"));
+                            hashMapPlacesData.put(id, arrayListDataStringDigitalOceans);
                         }
-
-                        arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("review_count"));
-
-                        if (!jsonObjectDigitalOceans.getString("contact").equalsIgnoreCase("null") &&
-                                !jsonObjectDigitalOceans.getString("contact").equalsIgnoreCase("")) {
-                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("contact"));
-                        } else {
-                            arrayListDataStringDigitalOceans.add(null);
-                        }
-
-                        if (!jsonObjectDigitalOceans.getString("menu").equalsIgnoreCase("null")) {
-                            arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("menu"));
-                        } else {
-                            arrayListDataStringDigitalOceans.add(null);
-                        }
-
-                        arrayListDataStringDigitalOceans.add(jsonObjectDigitalOceans.getString("business_type"));
-                        hashMapPlacesData.put(id, arrayListDataStringDigitalOceans);
                     }
                 }
 
-                for (int i = 0; i < jsonArrayMain.length(); i++) {
-                    JSONObject jsonObject = jsonArrayMain.getJSONObject(i);
-
-                    JSONObject jsonObjectGeometry = jsonObject.getJSONObject("geometry");
-                    JSONObject jsonObjectLocation = jsonObjectGeometry.getJSONObject("location");
-                    JSONObject jsonObjectOpeningHours;
-                    if (jsonObject.has("opening_hours")) {
-                        jsonObjectOpeningHours = jsonObject.getJSONObject("opening_hours");
-                    } else {
-                        jsonObjectOpeningHours = null;
-                    }
-                    String id = jsonObject.getString("id");
-
-                    if (!placesIDsList.contains(id) && !latLngArray.contains(Helpers.formatLatLngToLimitCharacterLengthAndReturnInSingleString(
-                            jsonObjectLocation.getString("lat"), jsonObjectLocation.getString("lng")))) {
-                        placesIDsList.add(id);
-                        ArrayList<String> arrayListString = new ArrayList<>();
-                        arrayListString.add(jsonObject.getString("name"));
-                        arrayListString.add(Helpers.formatLatLngToLimitCharacterLengthAndReturnInSingleString(
-                                jsonObjectLocation.getString("lat"), jsonObjectLocation.getString("lng")));
-                        if (jsonObject.has("rating")) {
-                            arrayListString.add(jsonObject.getString("rating"));
-                        } else {
-                            arrayListString.add(null);
-                        }
-
-                        if (jsonObjectOpeningHours != null && jsonObjectOpeningHours.has("open_now")) {
-                            arrayListString.add(jsonObjectOpeningHours.getString("open_now"));
-                        } else {
-                            arrayListString.add(null);
-                        }
-
-                        if (jsonObject.has("formatted_address")) {
-                            arrayListString.add(jsonObject.getString("formatted_address"));
-                        } else {
-                            arrayListString.add(null);
-                        }
-
-                        arrayListString.add(null);
-                        arrayListString.add(null);
-                        arrayListString.add(null);
-                        arrayListString.add(null);
-                        hashMapPlacesData.put(id, arrayListString);
-                    }
-                }
-
-            } catch (IOException | JSONException e) {
+                responseCode = connection.getResponseCode();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -1032,13 +1160,13 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            rlMapFragmentInfoWindow.setAnimation(animMapInfoWindowIn);
+                            rlMapFragmentInfoWindow.startAnimation(animMapInfoWindowIn);
                             rlMapFragmentInfoWindow.setVisibility(View.VISIBLE);
                         }
                     }, 2000);
                 }
             } else {
-                Toast.makeText(MainActivity.getInstance(), "Unable to find " +  Helpers.getAppropriateProjectName(selectedProjectType) + " nearby", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.getInstance(), "Unable to find " + Helpers.getAppropriateProjectName(selectedProjectType) + " nearby", Toast.LENGTH_LONG).show();
                 MainActivity.getInstance().onBackPressed();
             }
             Helpers.dismissProgressDialog();
@@ -1085,65 +1213,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener {
             super.onCancelled();
             isGetFormattedAddressTaskRunning = false;
         }
-    }
-
-    private int getAppropriateMapMarkerIconImageID(int authenticationType, int rating) {
-        int id = -1;
-        if (authenticationType == 0) {
-            if (rating == 0) {
-                id = R.mipmap.ic_marker_map_pizza_low_rating;
-            } else if (rating == 1) {
-                id = R.mipmap.ic_marker_map_pizza_normal_rating;
-            } else if (rating == 2) {
-                id = R.mipmap.ic_marker_map_pizza_high_rating;
-            }
-        } else if (authenticationType == 1) {
-            if (rating == 0) {
-                id = R.mipmap.ic_marker_map_wings_low_rating;
-            } else if (rating == 1) {
-                id = R.mipmap.ic_marker_map_wings_normal_rating;
-            } else if (rating == 2) {
-                id = R.mipmap.ic_marker_map_wings_high_rating;
-            }
-        } else if (authenticationType == 2) {
-            if (rating == 0) {
-                id = R.mipmap.ic_marker_map_burger_low_rating;
-            } else if (rating == 1) {
-                id = R.mipmap.ic_marker_map_burger_normal_rating;
-            } else if (rating == 2) {
-                id = R.mipmap.ic_marker_map_burger_high_rating;
-            }
-        } else if (authenticationType == 3) {
-            if (rating == 0) {
-                id = R.mipmap.ic_marker_map_taco_low_rating;
-            } else if (rating == 1) {
-                id = R.mipmap.ic_marker_map_taco_normal_rating;
-            } else if (rating == 2) {
-                id = R.mipmap.ic_marker_map_taco_high_rating;
-            }
-        }
-        return id;
-    }
-
-    private void setMarkerBounce(final Marker marker) {
-        final Handler handler = new Handler();
-        final long startTime = SystemClock.uptimeMillis();
-        final long duration = 650;
-        final Interpolator interpolator = new AccelerateDecelerateInterpolator();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (bounce) {
-                    long elapsed = SystemClock.uptimeMillis() - startTime;
-                    float t = Math.max(interpolator.getInterpolation((float) elapsed/duration), 0);
-                    marker.setAnchor(0.5f, 1.0f +  t);
-                    handler.postDelayed(this, 12);
-                } else {
-                    handler.removeCallbacks(this);
-                    marker.setAnchor(0.5f, 1.0f);
-                }
-            }
-        });
     }
 
 }
